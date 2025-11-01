@@ -91,6 +91,15 @@ This will use the git repository we just added
 kubectl apply -f argocd/bootstrap.yaml
 ```
 
+# Check ArgoCD logs
+```bash
+kubectl logs -n argocd \
+  -l app.kubernetes.io/name=argocd-application-controller \
+  --tail=50 | grep -i demo
+```
+
+
+--------------------------------
 
 ## Open web browser
 https://localhost:8080
