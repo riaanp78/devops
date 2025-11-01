@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://traefik.github.io/charts
     chart: traefik
-    targetRevision: 32.1.1   # pinned to Traefik v3.5.x
+    targetRevision: 32.1.1
     helm:
       values: |
         ports:
@@ -19,6 +19,8 @@ spec:
         providers:
           kubernetesIngress:
             enabled: true
+            publishedService:
+              enabled: true
         service:
           spec:
             type: NodePort
@@ -33,3 +35,5 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+
+    
