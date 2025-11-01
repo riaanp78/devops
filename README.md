@@ -63,10 +63,38 @@ kubectl apply -f argocd/bootstrap.yaml
 kubectl wait -n argocd --for=condition=available deployment/argocd-server --timeout=5m
 ```
 
+
+
+
+-------------------------------------
+# Get ArgoCD Initial password
+
+```bash
+argocd admin initial-password -n argocd | head -1
+```
+
 # Port‑forward UI (optional, for login)
 ```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443 &
 ```
+
+# ArgoCD CLI login
+argocd login localhost:8080 --username admin --password <your_admin_password> --insecure
+
+# Configure Git Repository 
+argocd repo add https://github.com/<YOUR_USER>/<YOUR_REPO>.git --username <USER> --password <TOKEN>
+
+# Bootstrap ArgoCD
+This will use the git repository we just added
+
+```bash
+kubectl apply -f argocd/bootstrap.yaml
+```
+
+
+## Open web browser
+https://localhost:8080
+
 
 
 # Using
@@ -78,7 +106,7 @@ Password:
 argocd admin initial-password -n argocd | head -1
 
 
-argocd repo add https://github.com/<YOUR_USER>/<YOUR_REPO>.git --username <USER> --password <TOKEN>
+
 
 
 kubectl apply -f argocd/apps/traefik/application.yaml

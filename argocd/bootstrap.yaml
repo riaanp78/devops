@@ -1,22 +1,16 @@
-# Install ArgoCD in its own namespace
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: argocd
----
+# argocd/bootstrap-apps.yaml  (apply AFTER ArgoCD is up)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd
+  name: root-apps
   namespace: argocd
-  finalizers:
-  - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/
-    targetRevision: HEAD
-    path: .
+    repoURL: 'https://github.com/riaanp78/devops.git'
+    path: argocd/apps
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
@@ -24,5 +18,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-    - CreateNamespace=true
