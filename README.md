@@ -17,6 +17,10 @@ kubectl -n argocd port-forward svc/argocd-server 8080:443
 
 argocd login localhost:8080 --username admin --password <paste-password> --insecure
 
+argocd repo add https://github.com/<YOUR_USER>/<YOUR_REPO>.git --username <USER> --password <TOKEN>
+
+kubectl apply -f argocd/bootstrap.yaml
+
 
 
 ### Delete cluster

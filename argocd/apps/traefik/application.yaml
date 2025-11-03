@@ -1,3 +1,4 @@
+# traefik-app.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -6,23 +7,18 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://helm.traefik.io/traefik
+    repoURL: https://traefik.github.io/charts
     chart: traefik
-    # Optionally set a chart version here (e.g., "v32.1.0"). If omitted, ArgoCD/Helm resolves latest.
-    targetRevision: ""
+    targetRevision: "v37.2.0"   # REQUIRED: Helm chart version
     helm:
       releaseName: traefik
       values: |
         image:
-          # Ensure Traefik 3.5 is used
           repository: traefik
           tag: "v3.5"
-        # Keep CRDs on (chart handles them)
-        deployment:
-          enabled: true
         service:
+          enabled: true
           type: NodePort
-          # Match these with kind extraPortMappings above
           spec:
             externalTrafficPolicy: Local
           ports:
@@ -39,32 +35,23 @@ spec:
             enabled: true
           kubernetesIngress:
             enabled: true
-            publishedService:
-              enabled: false
         ports:
           web:
             port: 80
-            expose: true
-            exposedPort: 80
-            protocol: TCP
+            expose:
+              default: true
           websecure:
             port: 443
-            expose: true
-            exposedPort: 443
-            protocol: TCP
+            expose:
+              default: true
             tls:
               enabled: true
         logs:
           general:
             level: INFO
-        # Minimal resources for local kind
         resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 500m
-            memory: 256Mi
+          requests: { cpu: 50m, memory: 64Mi }
+          limits:   { cpu: 500m, memory: 256Mi }
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik-system
