@@ -1,25 +1,23 @@
 # Devops Playground
 
 
-## Local Kubernetes Cluster 
-
-### Docker Setup
-Force Docker to use systemd cgroup driver (ignore if already working)
-
-```bash
-sudo mkdir -p /etc/docker
-sudo tee /etc/docker/daemon.json <<EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"]
-}
-EOF
-sudo systemctl restart docker
-```
-
-### Create cluster
-This will create a 3 node on device Kubernetes cluster with a control pane that runs on 0.0.0.0:8080
 
 kind create cluster --config kind-cluster/config.yaml
+
+
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+
+
+argocd admin initial-password -n argocd | head -1
+
+kubectl -n argocd port-forward svc/argocd-server 8080:443
+
+
+argocd login localhost:8080 --username admin --password <paste-password> --insecure
+
+
 
 ### Delete cluster
 kind delete cluster
