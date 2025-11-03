@@ -6,12 +6,11 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://helm.traefik.io/traefik
+    repoURL: https://traefik.github.io/charts
     chart: traefik
     targetRevision: 32.1.1
     helm:
       values: |
-        # Expose via NodePort (kind-friendly)
         service:
           type: NodePort
 
@@ -22,21 +21,22 @@ spec:
           websecure:
             port: 443
             nodePort: 30443
+          traefik:          
+            port: 9000
+            expose: true
+            exposedPort: 9000
 
-        # Make sure Traefik watches the "traefik" IngressClass
         ingressClass:
           enabled: true
-          isDefaultClass: true
+          isDefaultClass: false
           name: traefik
 
         providers:
           kubernetesIngress:
             enabled: true
-            ingressClass: traefik
             publishedService:
               enabled: true
 
-        # Optional: keep it as a Deployment
         deployment:
           kind: Deployment
   destination:
