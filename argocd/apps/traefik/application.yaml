@@ -9,32 +9,35 @@ spec:
   source:
     repoURL: https://traefik.github.io/charts
     chart: traefik
-    targetRevision: "v37.2.0"   # REQUIRED: Helm chart version
+    targetRevision: "v37.2.0" # REQUIRED: Helm chart version
     helm:
       releaseName: traefik
       values: |
         image:
           repository: traefik
           tag: "v3.5"
+
+
         service:
           enabled: true
           type: NodePort
           spec:
             externalTrafficPolicy: Local
-          ports:
-            web:
-              nodePort: 32080
-            websecure:
-              nodePort: 32443
+          nodePorts:                 
+            web: 32080               # <-- maps to kind host 80
+            websecure: 32443         # <-- maps to kind host 443  
+
         ingressClass:
           enabled: true
           isDefaultClass: true
           name: traefik
+
         providers:
           kubernetesCRD:
             enabled: true
           kubernetesIngress:
             enabled: true
+            
         ports:
           web:
             port: 80
